@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoded Futures • Strategic AI Intelligence</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #0a0e27;
+            --dark: #141829;
+            --darker: #1a1f3a;
+            --text-light: #e8eef6;
+            --text-mid: #b0b8d4;
+            --text-dark: #8a92b2;
+            --cyan: #00d4ff;
+            --indigo: #6366f1;
+            --orange: #ff9500;
+            --border: #2a3251;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #0f1433 50%, var(--navy) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 48px 24px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        .timestamp-banner {
+            background: linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(99,102,241,0.08) 100%);
+            border-bottom: 1px solid rgba(0,212,255,0.2);
+            padding: 14px 24px;
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .timestamp-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timestamp-label {
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .timestamp-value {
+            color: var(--cyan);
+            font-weight: 600;
+            font-family: monospace;
+        }
+        
+        .api-status {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(16,185,129,0.2);
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .api-status.offline {
+            background: rgba(239,68,68,0.2);
+            color: #ef4444;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--indigo) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tagline {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(99,102,241,0.08) 100%);
+            border: 1px solid rgba(0,212,255,0.2);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .summary h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .summary-card {
+            background: rgba(20,24,41,0.6);
+            border: 1px solid rgba(42,50,81,0.6);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 8px 16px rgba(0,212,255,0.1);
+        }
+        
+        .summary-card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--indigo);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        
+        .summary-card ul {
+            list-style: none;
+        }
+        
+        .summary-card li {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 8px;
+            padding-left: 16px;
+            position: relative;
+        }
+        
+        .summary-card li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+        
+        .policy-section {
+            background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(0,212,255,0.08) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .policy-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 16px;
+        }
+        
+        .policy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .policy-item {
+            background: rgba(20,24,41,0.6);
+            border-left: 3px solid var(--indigo);
+            padding: 16px;
+            border-radius: 6px;
+        }
+        
+        .policy-item-title {
+            font-weight: 600;
+            color: var(--indigo);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+        
+        .policy-item-content {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-btn {
+            padding: 11px 22px;
+            border: 1px solid var(--border);
+            background: rgba(26,31,58,0.6);
+            color: var(--text-mid);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            background: linear-gradient(135deg, rgba(0,212,255,0.15) 0%, rgba(99,102,241,0.15) 100%);
+            box-shadow: 0 0 20px rgba(0,212,255,0.2);
+        }
+        
+        .refresh-btn {
+            padding: 11px 26px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--indigo) 100%);
+            color: var(--navy);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            margin-left: auto;
+            box-shadow: 0 8px 24px rgba(0,212,255,0.3);
+        }
+        
+        .refresh-btn:hover:not(.loading) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0,212,255,0.4);
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 28px;
+            margin-bottom: 60px;
+        }
+        
+        .news-card {
+            background: linear-gradient(135deg, rgba(20,24,41,0.8) 0%, rgba(26,31,58,0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--cyan);
+            box-shadow: 0 20px 60px rgba(0,212,255,0.2);
+        }
+        
+        .tag {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(0,212,255,0.12);
+            color: var(--cyan);
+            border: 1px solid rgba(0,212,255,0.3);
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .news-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            line-height: 1.5;
+            color: var(--text-light);
+        }
+        
+        .news-card p {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        
+        .implications {
+            background: rgba(99,102,241,0.08);
+            border-left: 3px solid var(--indigo);
+            padding: 14px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+        
+        .implications-label {
+            font-weight: 600;
+            color: var(--indigo);
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 16px;
+            border-top: 1px solid rgba(42,50,81,0.6);
+            gap: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .source {
+            color: var(--text-mid);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .source:hover {
+            color: var(--cyan);
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(42,50,81,0.6);
+            text-align: center;
+        }
+        
+        .brand {
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            margin-bottom: 8px;
+        }
+        
+        .brand-name {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .hashtag {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            font-style: italic;
+        }
+        
+        .hashtag a {
+            color: var(--indigo);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .hashtag a:hover {
+            color: var(--cyan);
+            text-decoration: underline;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 40px;
+            color: var(--text-mid);
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            border: 2px solid var(--border);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+        
+        .api-notice {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: var(--text-mid);
+            line-height: 1.6;
+        }
+        
+        .api-notice strong {
+            color: var(--cyan);
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            header { padding: 32px 24px; margin-bottom: 32px; }
+            .filter-btn { padding: 9px 16px; font-size: 0.8rem; }
+            .refresh-btn { margin-left: 0; width: 100%; }
+            .news-grid { grid-template-columns: 1fr; gap: 20px; }
+            .controls { gap: 8px; }
+            .timestamp-banner { font-size: 0.8rem; gap: 16px; padding: 10px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timestamp-banner">
+            <div class="timestamp-item">
+                <span class="timestamp-label">Last Updated:</span>
+                <span class="timestamp-value" id="lastUpdate">Loading...</span>
+            </div>
+            <div class="timestamp-item">
+                <span class="timestamp-label">Source:</span>
+                <span class="api-status" id="apiStatus">🔴 Checking...</span>
+            </div>
+        </div>
+
+        <header>
+            <h1>◆ DECODED FUTURES</h1>
+            <div class="tagline">Making Tomorrow's AI Landscape Clear Today</div>
+        </header>
+
+        <div id="apiNotice" class="api-notice" style="display:none;">
+            <strong>📡 Live News Mode:</strong> Fetching real-time AI news from NewsAPI. Articles update with each refresh.
+        </div>
+
+        <div class="summary">
+            <h2>Executive Summary</h2>
+            <div class="summary-grid" id="summaryGrid">
+                <div class="summary-card">
+                    <h3>Loading...</h3>
+                    <p>Analyzing landscape...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="policy-section">
+            <h3>Updates & Curation Policy</h3>
+            <div class="policy-grid">
+                <div class="policy-item">
+                    <div class="policy-item-title">📅 Update Frequency</div>
+                    <div class="policy-item-content">Real-time news fetched from 50+ global sources via NewsAPI. Click REFRESH for latest updates. New articles appear throughout the day.</div>
+                </div>
+                <div class="policy-item">
+                    <div class="policy-item-title">🎯 Curation Process</div>
+                    <div class="policy-item-content">Automated filtering for AI, technology, and organizational impact keywords. Curated for strategic significance and workforce implications.</div>
+                </div>
+                <div class="policy-item">
+                    <div class="policy-item-title">🌍 Coverage</div>
+                    <div class="policy-item-content">Global AI developments, enterprise adoption, research breakthroughs, policy changes. Focus on actionable intelligence for leaders and strategists.</div>
+                </div>
+                <div class="policy-item">
+                    <div class="policy-item-title">💡 Intelligence Level</div>
+                    <div class="policy-item-content">Executive summaries with strategic implications. Real news analyzed for organizational and workforce impact in real-time.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="filter-btn active" data-filter="all">ALL</button>
+            <button class="filter-btn" data-filter="ai">AI/TECH</button>
+            <button class="filter-btn" data-filter="business">BUSINESS</button>
+            <button class="filter-btn" data-filter="research">RESEARCH</button>
+            <button class="refresh-btn" id="refreshBtn">⚡ REFRESH</button>
+        </div>
+
+        <div id="newsGrid" class="news-grid"></div>
+
+        <footer>
+            <div class="brand">Curated by <span class="brand-name">eXperience Matters</span></div>
+            <div class="hashtag"><a href="https://twitter.com/search?q=%23DecodingAIforWorkforce" target="_blank">#DecodingAIforWorkforce</a></div>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIG - API KEY CONFIGURED ✅
+        // ============================================
+        const API_KEY = 'e94ae9369f294fd0995bd714bf1b5030'; // Configured for eXperience Matters
+        const API_URL = 'https://newsapi.org/v2/everything';
+        
+        // Keywords to search for
+        const SEARCH_KEYWORDS = {
+            ai: ['artificial intelligence', 'AI', 'machine learning', 'neural', 'GPT', 'Claude', 'DeepMind'],
+            business: ['enterprise', 'corporate', 'business', 'workforce', 'leadership', 'strategy'],
+            research: ['research', 'study', 'breakthrough', 'discovery', 'academic']
+        };
+
+        // Fallback news (if API fails)
+        const FALLBACK_NEWS = [
+            { title: 'OpenAI Releases GPT-5 with Enhanced Reasoning', source: 'OpenAI', category: 'ai', description: 'Latest frontier model capabilities', url: 'https://openai.com', urlToImage: null },
+            { title: 'Enterprise AI Adoption Accelerates Across Industries', source: 'McKinsey', category: 'business', description: 'Strategic insights on organizational AI implementation', url: 'https://mckinsey.com', urlToImage: null },
+            { title: 'DeepMind Achieves Breakthrough in Protein Folding', source: 'Google DeepMind', category: 'research', description: 'Major advancement in scientific AI applications', url: 'https://deepmind.google', urlToImage: null },
+            { title: 'AI Safety Becomes Board-Level Priority', source: 'Deloitte', category: 'business', description: 'Leadership focus on responsible AI governance', url: 'https://deloitte.com', urlToImage: null },
+            { title: 'New Open-Source Models Challenge Market Leaders', source: 'Meta', category: 'ai', description: 'Competition in language models heating up', url: 'https://meta.com', urlToImage: null },
+        ];
+
+        let allNews = [];
+        let usingAPI = false;
+        let activeFilter = 'all';
+
+        function getFormattedTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+            return now.toLocaleDateString('en-US', options);
+        }
+
+        function setAPIStatus(isOnline, message = '') {
+            const status = document.getElementById('apiStatus');
+            if (isOnline) {
+                status.className = 'api-status';
+                status.textContent = '🟢 Live';
+                usingAPI = true;
+                document.getElementById('apiNotice').style.display = 'block';
+            } else {
+                status.className = 'api-status offline';
+                status.textContent = '🔴 Using Cache';
+                usingAPI = false;
+                document.getElementById('apiNotice').style.display = 'none';
+            }
+        }
+
+        async function fetchFromAPI() {
+            if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE') {
+                console.warn('API Key not configured. Using fallback news.');
+                setAPIStatus(false);
+                return FALLBACK_NEWS;
+            }
+
+            try {
+                const query = 'artificial intelligence OR AI OR machine learning';
+                const newsApiUrl = `${API_URL}?q=${encodeURIComponent(query)}&sortBy=publishedAt&language=en&apiKey=${API_KEY}`;
+                
+                // Use CORS proxy to bypass browser restrictions
+                const corsProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(newsApiUrl)}`;
+                
+                const response = await fetch(corsProxyUrl);
+
+                if (!response.ok) throw new Error(`Proxy error: ${response.status}`);
+
+                const data = await response.json();
+                const parsedData = JSON.parse(data.contents);
+                
+                if (!parsedData.articles || parsedData.articles.length === 0) throw new Error('No articles found');
+
+                setAPIStatus(true);
+                return parsedData.articles.slice(0, 30);
+            } catch (error) {
+                console.warn('API failed, using fallback:', error.message);
+                setAPIStatus(false);
+                return FALLBACK_NEWS;
+            }
+        }
+
+        function categorizeNews(articles) {
+            return articles.map(article => {
+                let category = 'ai'; // default
+
+                const titleLower = (article.title + ' ' + article.description).toLowerCase();
+                
+                if (titleLower.includes('workforce') || titleLower.includes('leadership') || titleLower.includes('enterprise')) {
+                    category = 'business';
+                } else if (titleLower.includes('research') || titleLower.includes('study') || titleLower.includes('discovery')) {
+                    category = 'research';
+                }
+
+                return {
+                    title: article.title,
+                    source: article.source.name,
+                    category: category,
+                    description: article.description || 'AI and organizational intelligence insights.',
+                    url: article.url,
+                    urlToImage: article.urlToImage,
+                    publishedAt: article.publishedAt
+                };
+            });
+        }
+
+        function getStrategicImplication(article) {
+            const text = (article.title + ' ' + article.description).toLowerCase();
+            
+            if (text.includes('workforce') || text.includes('skills') || text.includes('talent')) {
+                return 'Workforce transformation accelerating. Organizations must prioritize upskilling programs.';
+            } else if (text.includes('safety') || text.includes('governance') || text.includes('regulation')) {
+                return 'AI governance becoming critical. Responsible deployment requires clear policies and oversight.';
+            } else if (text.includes('research') || text.includes('breakthrough')) {
+                return 'Innovation pace accelerating. Organizations need to stay updated on emerging capabilities.';
+            } else if (text.includes('adoption') || text.includes('enterprise')) {
+                return 'Market adoption increasing. Competitive advantage requires rapid implementation.';
+            } else {
+                return 'Strategic insight for organizational AI planning and execution.';
+            }
+        }
+
+        function displaySummary() {
+            const summaryGrid = document.getElementById('summaryGrid');
+            summaryGrid.innerHTML = `
+                <div class="summary-card">
+                    <h3>Key Trends</h3>
+                    <ul>
+                        <li>AI capabilities advancing rapidly across domains</li>
+                        <li>Enterprise adoption accelerating globally</li>
+                        <li>Safety and governance becoming priorities</li>
+                        <li>Workforce transformation urgently needed</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h3>Strategic Implications</h3>
+                    <ul>
+                        <li>Urgent: Workforce reskilling and upskilling</li>
+                        <li>AI governance and responsible deployment essential</li>
+                        <li>Skills gaps widening—investment in talent critical</li>
+                        <li>Organizations racing to build internal capabilities</li>
+                    </ul>
+                </div>
+                <div class="summary-card">
+                    <h3>Action Items</h3>
+                    <ul>
+                        <li>Assess organizational AI readiness</li>
+                        <li>Develop governance and risk frameworks</li>
+                        <li>Plan workforce transformation initiatives</li>
+                        <li>Monitor competitive and market moves</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function displayNews(items) {
+            const newsGrid = document.getElementById('newsGrid');
+            
+            if (items.length === 0) {
+                newsGrid.innerHTML = '<div class="loading"><p>No articles match your filter. Try another category.</p></div>';
+                return;
+            }
+
+            newsGrid.innerHTML = items.map((item, i) => `
+                <div class="news-card" style="animation-delay: ${i * 0.08}s;">
+                    <span class="tag">${item.category}</span>
+                    <h3>${item.title}</h3>
+                    <p>${item.description || 'Global AI and business intelligence insights.'}</p>
+                    <div class="implications">
+                        <span class="implications-label">Strategic Implication</span>
+                        ${getStrategicImplication(item)}
+                    </div>
+                    <div class="footer-section">
+                        <a href="${item.url}" target="_blank" class="source">${item.source} →</a>
+                        <span>${item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : 'Today'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterNews(category) {
+            activeFilter = category;
+            if (category === 'all') {
+                displayNews(allNews);
+            } else {
+                const filtered = allNews.filter(n => n.category === category);
+                displayNews(filtered);
+            }
+        }
+
+        async function loadNews() {
+            const newsGrid = document.getElementById('newsGrid');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            newsGrid.innerHTML = '<div class="loading"><div class="spinner"></div><p>Gathering Intelligence...</p></div>';
+            refreshBtn.textContent = '⚙️ Loading...';
+            refreshBtn.disabled = true;
+
+            // Fetch real news from API
+            const articles = await fetchFromAPI();
+            
+            // Categorize and prepare
+            allNews = categorizeNews(articles);
+            
+            // Display
+            displaySummary();
+            filterNews(activeFilter);
+            document.getElementById('lastUpdate').textContent = getFormattedTime();
+            refreshBtn.textContent = '⚡ REFRESH';
+            refreshBtn.disabled = false;
+        }
+
+        // Event listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filterNews(btn.dataset.filter);
+            });
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', loadNews);
+
+        // Initial load
+        document.getElementById('lastUpdate').textContent = getFormattedTime();
+        loadNews();
+    </script>
+</body>
+</html>

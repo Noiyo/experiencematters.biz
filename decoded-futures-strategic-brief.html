@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoded Futures • Monthly Strategic Brief</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #0a0e27;
+            --dark: #141829;
+            --darker: #1a1f3a;
+            --text-light: #e8eef6;
+            --text-mid: #b0b8d4;
+            --text-dark: #8a92b2;
+            --cyan: #00d4ff;
+            --indigo: #6366f1;
+            --orange: #ff9500;
+            --green: #10b981;
+            --red: #ef4444;
+            --border: #2a3251;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #0f1433 50%, var(--navy) 100%);
+            color: var(--text-light);
+            line-height: 1.7;
+            padding: 48px 24px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container { max-width: 1000px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--indigo) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .issue-info {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            margin-bottom: 48px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(0,212,255,0.2);
+        }
+        
+        .content-block {
+            background: linear-gradient(135deg, rgba(20,24,41,0.8) 0%, rgba(26,31,58,0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+        
+        .block-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        
+        .block-content {
+            color: var(--text-mid);
+            line-height: 1.7;
+        }
+        
+        .block-content p {
+            margin-bottom: 12px;
+        }
+        
+        .block-content ul {
+            list-style: none;
+            margin-top: 12px;
+            margin-left: 16px;
+        }
+        
+        .block-content li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+        }
+        
+        .block-content li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+        
+        .swot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .swot-box {
+            border-radius: 8px;
+            padding: 24px;
+        }
+        
+        .swot-strengths {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%);
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        
+        .swot-weaknesses {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1) 0%, rgba(239,68,68,0.05) 100%);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+        
+        .swot-opportunities {
+            background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(245,158,11,0.05) 100%);
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+        
+        .swot-threats {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(99,102,241,0.05) 100%);
+            border: 1px solid rgba(99,102,241,0.3);
+        }
+        
+        .swot-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .swot-strengths .swot-title { color: var(--green); }
+        .swot-weaknesses .swot-title { color: var(--red); }
+        .swot-opportunities .swot-title { color: var(--orange); }
+        .swot-threats .swot-title { color: var(--indigo); }
+        
+        .swot-content {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .swot-content ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+        
+        .swot-content li {
+            padding: 6px 0 6px 20px;
+            position: relative;
+        }
+        
+        .swot-content li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(0,212,255,0.08) 100%);
+            border-left: 4px solid var(--cyan);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .recommendation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+        
+        .recommendation-title {
+            font-weight: 600;
+            color: var(--cyan);
+            font-size: 1rem;
+        }
+        
+        .priority-badge {
+            background: rgba(239,68,68,0.2);
+            color: var(--red);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .priority-badge.high {
+            background: rgba(239,68,68,0.2);
+            color: var(--red);
+        }
+        
+        .priority-badge.medium {
+            background: rgba(245,158,11,0.2);
+            color: var(--orange);
+        }
+        
+        .recommendation-content {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .timeline-marker {
+            flex-shrink: 0;
+            width: 80px;
+            padding-top: 4px;
+            font-weight: 600;
+            color: var(--cyan);
+            font-size: 0.9rem;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0,212,255,0.1);
+        }
+        
+        .timeline-content:last-child {
+            border-bottom: none;
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(42,50,81,0.6);
+            text-align: center;
+            color: var(--text-mid);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .swot-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 MONTHLY STRATEGIC BRIEF</h1>
+            <div class="issue-info">
+                📅 February 2026 | 🎯 Focus: Thailand's AI Competitive Position & Strategy
+            </div>
+        </header>
+
+        <!-- EXECUTIVE SUMMARY -->
+        <div class="section">
+            <div class="section-title">📋 Executive Summary</div>
+            <div class="content-block">
+                <div class="block-title">The Critical Moment</div>
+                <div class="block-content">
+                    <p><strong>Thailand stands at an inflection point.</strong> With the highest AI market growth rate in ASEAN (28.55% annually), strong government backing (Thailand 4.0), and strategic geographic position, the country is positioned to become ASEAN's AI hub. However, business adoption rates (17.1%) still lag Indonesia (24.6%) and a window of competitive advantage is closing quickly.</p>
+                    <p><strong>The reality check:</strong> Success requires coordinated action across three fronts: (1) infrastructure investment to match Singapore/Indonesia, (2) rapid workforce upskilling to close skills gap, and (3) responsible AI governance to attract global investment. Without action, Thailand risks being overtaken by more aggressive competitors.</p>
+                    <p><strong>Bottom line:</strong> 2026-2027 is the critical 18-month window. Organizations and policymakers must act NOW to capture $2.6 trillion economic potential by 2030.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MARKET POSITIONING -->
+        <div class="section">
+            <div class="section-title">🏆 Thailand's Market Positioning</div>
+            
+            <div class="content-block">
+                <div class="block-title">Competitive Standing vs Regional Rivals</div>
+                <div class="block-content">
+                    <p><strong>Singapore (🥇 Leader):</strong> $1.6B government investment, $26B private capital, global AI hub status. Advantage: mature infrastructure, talent pool, regulatory clarity. Risk: market saturation, high costs.</p>
+                    <p><strong>Indonesia (🥈 Challenger):</strong> 24.6% business adoption (highest), large domestic market, growing startup ecosystem. Advantage: scale, market leverage. Risk: infrastructure gaps, skill shortages.</p>
+                    <p><strong>Thailand (🥉 Emerging):</strong> 28.55% annual growth, strategic location, government commitment. Advantage: growth rate, latency positioning, emerging ecosystem. Risk: adoption lag, infrastructure catch-up.</p>
+                    <p><strong>Malaysia (🎯 Contender):</strong> Top 20 global AI economy ambition, balanced approach. Advantage: stable policies, talent programs. Risk: late mover, less aggressive investment.</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="block-title">Thailand's Unique Position</div>
+                <div class="block-content">
+                    <ul>
+                        <li><strong>Geographic Advantage:</strong> "Latency sweet spot" for Asia-Pacific. Key markets (Singapore, Vietnam, Malaysia) optimal distance for latency-sensitive applications (autonomous driving, telemedicine, fintech).</li>
+                        <li><strong>Infrastructure Momentum:</strong> $30B+ in data center investments (H1 2024). Google, AWS expanding presence. Ground-based digital corridors from China/Laos reducing dependency on submarine cables.</li>
+                        <li><strong>Government Commitment:</strong> Thailand 4.0 backed by 25B baht allocation. AI governance framework on track (Feb 21 cabinet review). Education ministry integrating AI literacy into curriculum.</li>
+                        <li><strong>Growing Ecosystem:</strong> Bangkok hosting regional cybersecurity & AI showcases (140 exhibitors, 15 countries). Startup ecosystem emerging with FlowAccount, other AI companies.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SWOT ANALYSIS -->
+        <div class="section">
+            <div class="section-title">🔍 SWOT Analysis</div>
+            <div class="swot-grid">
+                <div class="swot-box swot-strengths">
+                    <div class="swot-title">💪 Strengths</div>
+                    <div class="swot-content">
+                        <ul>
+                            <li>Highest AI market growth (28.55%)</li>
+                            <li>Strategic geographic position</li>
+                            <li>Government backing (Thailand 4.0)</li>
+                            <li>Emerging data center hub</li>
+                            <li>Growing startup ecosystem</li>
+                            <li>Regional events momentum</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="swot-box swot-weaknesses">
+                    <div class="swot-title">⚠️ Weaknesses</div>
+                    <div class="swot-content">
+                        <ul>
+                            <li>Business adoption lag (17.1%)</li>
+                            <li>Infrastructure behind Singapore</li>
+                            <li>Workforce skills shortage</li>
+                            <li>Submarine cable capacity gaps</li>
+                            <li>Network reliability issues</li>
+                            <li>Limited global AI talent in region</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="swot-box swot-opportunities">
+                    <div class="swot-title">🚀 Opportunities</div>
+                    <div class="swot-content">
+                        <ul>
+                            <li>$2.6T economic value by 2030</li>
+                            <li>Regional hub positioning</li>
+                            <li>SME AI adoption growth</li>
+                            <li>Data sovereignty trends</li>
+                            <li>Education system transformation</li>
+                            <li>Cross-border ASEAN partnerships</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="swot-box swot-threats">
+                    <div class="swot-title">🔴 Threats</div>
+                    <div class="swot-content">
+                        <ul>
+                            <li>Indonesia's faster adoption</li>
+                            <li>Singapore's entrenched position</li>
+                            <li>Global tech giants' control</li>
+                            <li>Agentic AI disruption risk</li>
+                            <li>Skills poaching to Singapore</li>
+                            <li>Geopolitical AI tensions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRITICAL FACTORS -->
+        <div class="section">
+            <div class="section-title">⚡ Critical Success Factors (2026-2027)</div>
+            
+            <div class="recommendation-box">
+                <div class="recommendation-header">
+                    <div class="recommendation-title">1. Workforce Upskilling - THE URGENT CRISIS</div>
+                    <div class="priority-badge high">CRITICAL</div>
+                </div>
+                <div class="recommendation-content">
+                    <p>The #1 bottleneck. Despite high market potential, workforce skills shortage could handicap Thailand's advantage. Current action:</p>
+                    <ul style="margin-top: 12px;">
+                        <li>DEPA + Ministry of Education: 500-school pilot for AI literacy</li>
+                        <li>Target: 50,000 AI-ready professionals by 2028</li>
+                        <li>But this is insufficient. Need: parallel corporate training, university partnerships, salary competitiveness vs Singapore.</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Must happen NOW:</strong> Accelerate university AI degree programs, create AI bootcamp ecosystem, incentivize staying (vs brain drain to Singapore).</p>
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <div class="recommendation-header">
+                    <div class="recommendation-title">2. Infrastructure Infrastructure Race - TIMING CRITICAL</div>
+                    <div class="priority-badge high">CRITICAL</div>
+                </div>
+                <div class="recommendation-content">
+                    <p>$30B+ invested in data centers, but must sustain momentum. Competitors not sleeping:</p>
+                    <ul style="margin-top: 12px;">
+                        <li>Singapore: Mature, dominant position</li>
+                        <li>Malaysia/Vietnam: Aggressive expansion</li>
+                        <li>Thailand must: Add submarine cables, improve network reliability, reduce latency</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Must happen NOW:</strong> Secure international submarine cable partnerships, establish data localization compliance infrastructure, create incentives for hyperscale data center development.</p>
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <div class="recommendation-header">
+                    <div class="recommendation-title">3. Business Adoption Acceleration - CLOSING THE LOOP</div>
+                    <div class="priority-badge medium">HIGH</div>
+                </div>
+                <div class="recommendation-content">
+                    <p>17.1% adoption is good but 7.5 points behind Indonesia. Need to move beyond pilots to enterprise deployment:</p>
+                    <ul style="margin-top: 12px;">
+                        <li>Focus on SMEs (3.2M businesses, 50% workforce) not just corporates</li>
+                        <li>Create accessible AI solutions (FlowAccount model)</li>
+                        <li>Demonstrate ROI (60% SEA companies report growth from GenAI)</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Must happen NOW:</strong> Government subsidies for AI adoption, sector-specific accelerators, case study marketing to SMEs.</p>
+                </div>
+            </div>
+
+            <div class="recommendation-box">
+                <div class="recommendation-header">
+                    <div class="recommendation-title">4. Responsible AI Governance - CREDIBILITY BUILDER</div>
+                    <div class="priority-badge">MEDIUM</div>
+                </div>
+                <div class="recommendation-content">
+                    <p>The Feb 21 cabinet AI governance framework decision is make-or-break for foreign investment confidence:</p>
+                    <ul style="margin-top: 12px;">
+                        <li>Pass framework: Signals Thailand as responsible, trustworthy AI hub</li>
+                        <li>Fail/delay: Signals instability, creates uncertainty for global investors</li>
+                        <li>ASEAN Guidelines provide baseline; Thailand should exceed them</li>
+                    </ul>
+                    <p style="margin-top: 12px;"><strong>Must happen NOW:</strong> Cabinet approval Feb 21. Transparent implementation. Build stakeholder trust.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEGIC RECOMMENDATIONS -->
+        <div class="section">
+            <div class="section-title">💡 Strategic Recommendations</div>
+            
+            <div class="content-block">
+                <div class="block-title">For Policy Makers (Government Leadership)</div>
+                <div class="block-content">
+                    <p><strong>3-Month Priority (Feb-Apr 2026):</strong></p>
+                    <ul>
+                        <li><strong>✓ Pass AI Governance Framework (Feb 21):</strong> Cabinet approval critical for credibility. Should exceed ASEAN guidelines to attract global investment.</li>
+                        <li><strong>✓ Finalize Data Sovereignty Requirements (Q2):</strong> Coordinate with ASEAN partners. Create predictable compliance path for enterprises.</li>
+                        <li><strong>✓ Launch Fast-Track Visas for AI Talent:</strong> Create attractive visa program for AI researchers, engineers, founders from global hubs.</li>
+                        <li><strong>✓ Allocate Next Funding Tranche:</strong> Secure budget for Phase 2 of digital infrastructure beyond initial 25B baht.</li>
+                    </ul>
+                    <p style="margin-top: 16px;"><strong>6-Month Priority (May-Jul):</strong></p>
+                    <ul>
+                        <li><strong>✓ Establish AI Skills Council:</strong> Cross-sector committee (government + industry + education) to coordinate workforce development.</li>
+                        <li><strong>✓ Submarine Cable Partnerships:</strong> Secure new international connections to improve regional latency position.</li>
+                        <li><strong>✓ Monitor Singapore/Indonesia Moves:</strong> Be prepared to match competitive initiatives to maintain momentum.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="block-title">For Business Leaders (Companies & Entrepreneurs)</div>
+                <div class="block-content">
+                    <p><strong>Immediate Actions (Feb-Mar 2026):</strong></p>
+                    <ul>
+                        <li><strong>✓ Audit AI Readiness:</strong> Assess current AI adoption vs competitors. Identify quick wins for 2026 deployment.</li>
+                        <li><strong>✓ Plan Agentic AI Pilots:</strong> 75% of companies globally investing in agentic AI. Don't get left behind. Start small pilots now.</li>
+                        <li><strong>✓ Prepare for Data Sovereignty:</strong> Anticipated Q2 finalization of requirements. Build compliant architecture now to avoid delays.</li>
+                        <li><strong>✓ Recruit AI Talent:</strong> Market is tightening. Start recruiting now before salary competition from Singapore intensifies.</li>
+                    </ul>
+                    <p style="margin-top: 16px;"><strong>3-6 Month Priority (Apr-Jul):</strong></p>
+                    <ul>
+                        <li><strong>✓ Scale Successful Pilots:</strong> Move from experiments to enterprise deployment. Capture ROI before market saturates.</li>
+                        <li><strong>✓ Build Responsible AI Culture:</strong> Companies demonstrating responsible AI will win customer trust and investment. Make this core differentiator.</li>
+                        <li><strong>✓ Develop ASEAN Expansion Plan:</strong> Thailand infrastructure becoming regional hub opens cross-border opportunities. Plan regional strategy.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 18-MONTH ROADMAP -->
+        <div class="section">
+            <div class="section-title">🗓️ 18-Month Critical Path (Feb 2026 - Aug 2027)</div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">Feb 2026</div>
+                    <div class="timeline-content">
+                        <strong>AI Governance Cabinet Review (Feb 21)</strong> - Critical decision point. Thailand signals commitment or uncertainty.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Mar-Apr 2026</div>
+                    <div class="timeline-content">
+                        <strong>Business Adoption Acceleration</strong> - Focus on SME enablement, agentic AI pilots, talent recruitment surge.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Q2 2026</div>
+                    <div class="timeline-content">
+                        <strong>Data Sovereignty Finalization</strong> - ASEAN partners complete requirements. Compliance infrastructure must be ready.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Q3 2026</div>
+                    <div class="timeline-content">
+                        <strong>Scale & Infrastructure</strong> - Agentic AI deployments scaling. Submarine cable partnerships announced. First government AI research center opens.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Q4 2026</div>
+                    <div class="timeline-content">
+                        <strong>Ecosystem Maturation</strong> - AI skills pipeline visible. Adoption rates catching up to Indonesia. Regional talent hub reputation growing.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">H1 2027</div>
+                    <div class="timeline-content">
+                        <strong>Leadership Consolidation</strong> - Thailand positioned as ASEAN AI leader (vs Singapore: global; Indonesia: scale leader). $500M+ in new AI company valuations.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">H2 2027</div>
+                    <div class="timeline-content">
+                        <strong>Sustainable Growth</strong> - Self-reinforcing cycle: infrastructure attracts talent, talent enables companies, companies drive economy, economy justifies further investment.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM LINE -->
+        <div class="section">
+            <div class="section-title">🎯 Bottom Line</div>
+            <div class="content-block">
+                <div class="block-title">The Stakes & The Opportunity</div>
+                <div class="block-content">
+                    <p><strong>If Thailand executes well:</strong> $2.6 trillion economic value by 2030. Regional AI leadership. Sustainable competitive advantage. Jobs, exports, innovation ecosystem. Global recognition as ASEAN's technology hub.</p>
+                    <p><strong>If Thailand hesitates:</strong> Indonesia overtakes on adoption. Singapore maintains dominance. Thailand becomes secondary player. Missed $2.6T opportunity. Workforce skills gap widens. Global talent moves to Singapore/Malaysia.</p>
+                    <p><strong>The window:</strong> 18 months (Feb 2026 - Aug 2027) is critical. Every month of delay increases competitive disadvantage. Organizations waiting for "perfect conditions" will be disrupted by competitors who move now.</p>
+                    <p><strong>The call:</strong> 2026 is Thailand's make-or-break year for AI leadership. Leaders must decide: compete for ASEAN AI dominance or settle for participation.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div>Monthly Strategic Brief • Published: Last day of month</div>
+            <div style="margin-top: 8px;">Next Issue: March 31, 2026 | #DecodingAIforWorkforce</div>
+        </footer>
+    </div>
+</body>
+</html>

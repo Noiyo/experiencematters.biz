@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoded Futures • Intelligence Command Center</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #0a0e27;
+            --dark: #141829;
+            --darker: #1a1f3a;
+            --text-light: #e8eef6;
+            --text-mid: #b0b8d4;
+            --text-dark: #8a92b2;
+            --cyan: #00d4ff;
+            --indigo: #6366f1;
+            --orange: #ff9500;
+            --green: #10b981;
+            --border: #2a3251;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #0f1433 50%, var(--navy) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 48px 24px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--indigo) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tagline {
+            font-size: 0.95rem;
+            color: var(--text-mid);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 40px;
+        }
+        
+        .nav-card {
+            background: linear-gradient(135deg, rgba(0,212,255,0.1) 0%, rgba(99,102,241,0.1) 100%);
+            border: 1px solid rgba(0,212,255,0.2);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .nav-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 8px 24px rgba(0,212,255,0.2);
+            transform: translateY(-4px);
+        }
+        
+        .nav-icon {
+            font-size: 2rem;
+        }
+        
+        .nav-title {
+            font-weight: 600;
+            color: var(--cyan);
+            font-size: 1.1rem;
+        }
+        
+        .nav-desc {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+        
+        .nav-meta {
+            font-size: 0.75rem;
+            color: var(--text-dark);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(0,212,255,0.1);
+        }
+        
+        .status-section {
+            background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(0,212,255,0.08) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .status-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 20px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .status-item {
+            background: rgba(20,24,41,0.6);
+            border: 1px solid rgba(42,50,81,0.6);
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .status-label {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .status-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--green);
+        }
+        
+        .status-value.warning {
+            color: var(--orange);
+        }
+        
+        .info-section {
+            background: linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(99,102,241,0.08) 100%);
+            border: 1px solid rgba(0,212,255,0.2);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .info-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 16px;
+        }
+        
+        .info-content {
+            color: var(--text-mid);
+            line-height: 1.8;
+        }
+        
+        .info-content ul {
+            list-style: none;
+            margin-top: 12px;
+        }
+        
+        .info-content li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .info-content li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(42,50,81,0.6);
+            text-align: center;
+            color: var(--text-mid);
+            font-size: 0.85rem;
+        }
+        
+        .footer-brand {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            header { padding: 32px 24px; }
+            .nav-tabs { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>◆ DECODED FUTURES</h1>
+            <div class="tagline">Intelligence Command Center • Global + SEA + Thailand</div>
+        </header>
+
+        <div class="status-section">
+            <div class="status-title">📊 System Status</div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">Daily News Hub</div>
+                    <div class="status-value">🟢 Live</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Market Metrics</div>
+                    <div class="status-value">Updated Today</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Policy Briefing</div>
+                    <div class="status-value warning">Due This Week</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Strategic Analysis</div>
+                    <div class="status-value">Feb 28, 2026</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <a href="decoded-futures-api.html" class="nav-card" target="_blank">
+                <div class="nav-icon">📰</div>
+                <div class="nav-title">Daily News Hub</div>
+                <div class="nav-desc">Real-time AI intelligence from 50+ global sources</div>
+                <div class="nav-meta">Updated: Every refresh • Live API feed</div>
+            </a>
+
+            <a href="decoded-futures-metrics.html" class="nav-card" target="_blank">
+                <div class="nav-icon">📊</div>
+                <div class="nav-title">Market Metrics</div>
+                <div class="nav-desc">Global, SEA, and Thailand comparative analysis</div>
+                <div class="nav-meta">Updated: Daily • Interactive dashboard</div>
+            </a>
+
+            <a href="decoded-futures-policy-briefing.html" class="nav-card" target="_blank">
+                <div class="nav-icon">🏛️</div>
+                <div class="nav-title">Policy Briefing</div>
+                <div class="nav-desc">Weekly government & regulatory developments</div>
+                <div class="nav-meta">Updated: Fridays • Strategic focus</div>
+            </a>
+
+            <a href="decoded-futures-strategic-brief.html" class="nav-card" target="_blank">
+                <div class="nav-icon">🎯</div>
+                <div class="nav-title">Strategic Analysis</div>
+                <div class="nav-desc">Monthly deep-dive competitive intelligence</div>
+                <div class="nav-meta">Updated: Month-end • Actionable insights</div>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <div class="info-title">📡 How This Works Together</div>
+            <div class="info-content">
+                <p style="margin-bottom: 16px;"><strong>A complete intelligence system for leaders & policy makers:</strong></p>
+                <ul>
+                    <li><strong>Daily News Hub:</strong> Stay current with breaking AI developments globally, SEA-wide, and Thailand-specific</li>
+                    <li><strong>Market Metrics:</strong> Track key performance indicators showing where we stand vs. competitors</li>
+                    <li><strong>Policy Briefing:</strong> Understand government decisions, regulatory changes, and strategic initiatives</li>
+                    <li><strong>Strategic Analysis:</strong> Deep analysis on competitive positioning, risks, and opportunities</li>
+                </ul>
+                <p style="margin-top: 16px; color: var(--text-dark); font-style: italic;">Each component feeds into the others. Daily news informs weekly policy discussions. Weekly briefings inform monthly strategy.</p>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-title">🎯 For Your Use Case</div>
+            <div class="info-content">
+                <ul>
+                    <li><strong>Policy Makers:</strong> Focus on Policy Briefing (Fridays) + Strategic Analysis (monthly) for governance decisions</li>
+                    <li><strong>Business Leaders:</strong> Daily News + Market Metrics to track competitive landscape</li>
+                    <li><strong>Both:</strong> Weekly monitoring of news + monthly strategy sessions</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div>Curated by <span class="footer-brand">eXperience Matters</span></div>
+            <div style="margin-top: 8px;">#DecodingAIforWorkforce</div>
+        </footer>
+    </div>
+</body>
+</html>
