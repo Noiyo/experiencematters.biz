@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoded Futures • Weekly Policy Briefing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #0a0e27;
+            --dark: #141829;
+            --darker: #1a1f3a;
+            --text-light: #e8eef6;
+            --text-mid: #b0b8d4;
+            --text-dark: #8a92b2;
+            --cyan: #00d4ff;
+            --indigo: #6366f1;
+            --orange: #ff9500;
+            --border: #2a3251;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #0f1433 50%, var(--navy) 100%);
+            color: var(--text-light);
+            line-height: 1.7;
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 600;
+            color: var(--orange);
+            font-size: 1.1rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .nav-menu a {
+            color: var(--text-mid);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--cyan);
+        }
+        
+        .nav-menu a.active {
+            color: var(--cyan);
+            border-bottom: 2px solid var(--cyan);
+            padding-bottom: 4px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 48px 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        .breadcrumb {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            font-size: 0.9rem;
+            color: var(--text-mid);
+        }
+        
+        .breadcrumb a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--indigo) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .content-block {
+            background: linear-gradient(135deg, rgba(20,24,41,0.8) 0%, rgba(26,31,58,0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+        
+        .block-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        
+        .block-content {
+            color: var(--text-mid);
+            line-height: 1.7;
+        }
+        
+        .block-content p {
+            margin-bottom: 12px;
+        }
+        
+        .block-content ul {
+            list-style: none;
+            margin-top: 12px;
+            margin-left: 16px;
+        }
+        
+        .block-content li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+        }
+        
+        .block-content li:before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+        
+        footer {
+            border-top: 1px solid rgba(42,50,81,0.6);
+            padding: 40px 24px;
+            background: var(--dark);
+            text-align: center;
+            color: var(--text-mid);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .footer-brand {
+            color: var(--orange);
+            font-weight: 600;
+        }
+        
+        .disclaimer {
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 16px;
+            font-size: 0.75rem;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+        
+        .disclaimer-title {
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 12px;
+        }
+        
+        .disclaimer ul {
+            list-style: none;
+            margin-top: 8px;
+            margin-left: 16px;
+        }
+        
+        .disclaimer li {
+            padding: 4px 0 4px 16px;
+            position: relative;
+        }
+        
+        .disclaimer li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .nav-menu { gap: 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">eXperience Matters</div>
+            <div class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="daily-news.html">Daily News</a>
+                <a href="metrics.html">Metrics</a>
+                <a href="policy-briefing.html" class="active">Policy</a>
+                <a href="strategic-brief.html">Strategy</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <span>Weekly Policy Briefing</span>
+            </div>
+
+            <header>
+                <h1>🏛️ POLICY BRIEFING</h1>
+                <div style="color: var(--text-mid); font-size: 0.95rem;">Week of February 10-16, 2026 • Global • SEA • Thailand</div>
+            </header>
+
+            <div class="content-block">
+                <div class="block-title">⚡ This Week's Critical Developments</div>
+                <div class="block-content">
+                    <p><strong>Thailand:</strong> Cabinet discusses AI governance framework amendments (Due: Feb 21)</p>
+                    <p><strong>ASEAN:</strong> AI Ethics Guidelines finalized and endorsed by all member states</p>
+                    <p><strong>Global:</strong> G7 releases AI Regulation Harmonization proposal</p>
+                    <p><strong>SEA:</strong> Regional data sovereignty initiatives progress toward Q2 2026 finalization</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="block-title">🇹🇭 Thailand Government Initiatives</div>
+                <div class="block-content">
+                    <p><strong>National AI Governance Framework - Cabinet Review (URGENT)</strong></p>
+                    <p>Cabinet meeting scheduled February 21 to review proposed AI governance and ethics framework. Key elements: data privacy standards, algorithmic accountability, liability frameworks. This addresses gaps from 2022 stalled attempts. Successfully passing this framework signals Thailand's commitment to becoming ASEAN AI hub.</p>
+                    
+                    <p style="margin-top: 16px;"><strong>Thailand 4.0 - Digital Economy Acceleration (ONGOING)</strong></p>
+                    <p>Government allocating additional 25 billion baht for digital infrastructure development. Focus areas: workforce skilling programs, startup ecosystem support, regional hub positioning. Q1 2026 progress: 60% of funds disbursed, 5 new AI research centers established.</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="block-title">🌏 ASEAN/SEA Regional Developments</div>
+                <div class="block-content">
+                    <p><strong>ASEAN AI Ethics & Governance Guidelines - Official Release</strong></p>
+                    <p>All 10 ASEAN member states approved unified AI ethics framework. Establishes baseline standards for: transparency, fairness, accountability, data privacy. Positions ASEAN as responsible AI adopter globally.</p>
+                    
+                    <p style="margin-top: 16px;"><strong>Regional Data Sovereignty Initiative - Progress Update</strong></p>
+                    <p>Singapore, Malaysia, Thailand, Vietnam establishing data localization requirements. Goal: Regional data infrastructure reducing dependency on external cloud providers. Expected finalization: Q2 2026.</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="block-title">🌐 Global Regulatory Environment</div>
+                <div class="block-content">
+                    <p><strong>G7 AI Regulation Harmonization Proposal</strong></p>
+                    <p>G7 released framework for harmonizing AI regulations across major economies. Proposes shared standards for: model transparency, safety testing, liability. Expected broad adoption by major markets by 2H 2026.</p>
+                    
+                    <p style="margin-top: 16px;"><strong>EU AI Act - Enforcement Phase Begins</strong></p>
+                    <p>European Union beginning enforcement of landmark AI Act. High-risk AI systems now require approval before deployment. Compliance deadline: June 2026. Creating de facto global standard as companies adopt EU requirements everywhere.</p>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="block-title">✅ Actions for Next Week</div>
+                <div class="block-content">
+                    <ul>
+                        <li><strong>Policy Makers:</strong> Monitor Feb 21 cabinet decision on AI governance. Prepare stakeholder engagement if framework passes.</li>
+                        <li><strong>Business Leaders:</strong> Audit compliance with proposed Thai AI governance standards. Prepare teams for data sovereignty requirements.</li>
+                        <li><strong>HR/Talent:</strong> Accelerate AI skills training programs. DEPA education initiative creates talent pipeline.</li>
+                        <li><strong>IT/Compliance:</strong> Review EU AI Act requirements. Plan data localization architecture changes for Q2 2026.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>Curated by <span class="footer-brand">eXperience Matters</span></div>
+        <div style="margin-top: 8px;">#DecodingAIforWorkforce</div>
+        <div class="disclaimer">
+            <div class="disclaimer-title">⚠️ Comprehensive Disclaimer</div>
+            <ul>
+                <li><strong>Data Accuracy:</strong> Information is curated from publicly available sources. While we strive for accuracy and completeness, we do not guarantee that all information is accurate, complete, or error-free.</li>
+                <li><strong>Not Investment/Business Advice:</strong> This content is intelligence and analysis only. It should NOT be construed as investment advice, financial advice, business advice, or any form of professional guidance. Consult appropriate professionals before making decisions.</li>
+                <li><strong>User Responsibility:</strong> Users are solely responsible for their own decisions and actions based on this information. eXperience Matters assumes no liability for decisions made based on this content.</li>
+                <li><strong>Data Freshness:</strong> Information may not reflect the most recent developments. News and metrics are updated on regular schedules but may lag behind actual events.</li>
+                <li><strong>Intellectual Property:</strong> All content is curated, compiled, and presented by eXperience Matters. Use of this content is subject to our usage terms and applicable laws.</li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
