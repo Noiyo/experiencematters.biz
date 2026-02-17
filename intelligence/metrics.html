@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decoded Futures • Market Metrics Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #0a0e27;
+            --dark: #141829;
+            --darker: #1a1f3a;
+            --text-light: #e8eef6;
+            --text-mid: #b0b8d4;
+            --text-dark: #8a92b2;
+            --cyan: #00d4ff;
+            --indigo: #6366f1;
+            --orange: #ff9500;
+            --green: #10b981;
+            --red: #ef4444;
+            --border: #2a3251;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--navy) 0%, #0f1433 50%, var(--navy) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 48px 24px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(0deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent),
+                linear-gradient(90deg, transparent 24%, rgba(0,212,255,0.05) 25%, rgba(0,212,255,0.05) 26%, transparent 27%, transparent 74%, rgba(0,212,255,0.05) 75%, rgba(0,212,255,0.05) 76%, transparent 77%, transparent);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 48px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--indigo) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: var(--text-mid);
+            font-size: 0.95rem;
+        }
+        
+        .update-banner {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 32px;
+            font-size: 0.85rem;
+            color: var(--text-mid);
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .region-icon {
+            font-size: 1.6rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(20,24,41,0.8) 0%, rgba(26,31,58,0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 8px 24px rgba(0,212,255,0.15);
+        }
+        
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 8px;
+        }
+        
+        .metric-value.positive {
+            color: var(--green);
+        }
+        
+        .metric-value.warning {
+            color: var(--orange);
+        }
+        
+        .metric-change {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+        
+        .metric-change.up {
+            color: var(--green);
+        }
+        
+        .metric-change.down {
+            color: var(--red);
+        }
+        
+        .comparison-table {
+            background: linear-gradient(135deg, rgba(20,24,41,0.8) 0%, rgba(26,31,58,0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        
+        .table-header {
+            background: rgba(0,212,255,0.1);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            font-weight: 600;
+            color: var(--cyan);
+        }
+        
+        .table-row {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-row:hover {
+            background: rgba(0,212,255,0.05);
+        }
+        
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 40px;
+            margin-top: 12px;
+        }
+        
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--cyan) 0%, var(--indigo) 100%);
+            border-radius: 4px 4px 0 0;
+            min-height: 5px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .bar:hover {
+            opacity: 0.8;
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(0,212,255,0.08) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-left: 3px solid var(--indigo);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--indigo);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .insight-content {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(42,50,81,0.6);
+            text-align: center;
+            color: var(--text-mid);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+            }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 MARKET METRICS DASHBOARD</h1>
+            <div class="subtitle">Global • SEA • Thailand Comparative Intelligence</div>
+        </header>
+
+        <div class="update-banner">
+            ✅ Updated: February 14, 2026 • Next Update: Daily • Data Source: Latest market research & official reports
+        </div>
+
+        <!-- GLOBAL SECTION -->
+        <div class="section">
+            <div class="section-title">
+                <span class="region-icon">🌐</span>
+                Global AI Market
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Market Size 2026</div>
+                    <div class="metric-value positive">$514.5B</div>
+                    <div class="metric-change up">↑ 19% YoY growth</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Projected 2030</div>
+                    <div class="metric-value">$3.5T</div>
+                    <div class="metric-change">30.6% CAGR (2027-2033)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Company Adoption</div>
+                    <div class="metric-value positive">94%</div>
+                    <div class="metric-change">Using AI in ≥1 function</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Agentic AI Investment</div>
+                    <div class="metric-value positive">75%</div>
+                    <div class="metric-change">Of companies planning 2026</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">ROI per Dollar</div>
+                    <div class="metric-value positive">3.7x</div>
+                    <div class="metric-change">Generative AI & related</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">US Market Share</div>
+                    <div class="metric-value">16.2%</div>
+                    <div class="metric-change">$83.2B of global market</div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">🎯 Key Insight</div>
+                <div class="insight-content">
+                    AI has shifted from experimental technology to primary driver of economic growth. The market is moving from Generative AI (content creation) to Agentic AI (autonomous decision-making), creating new opportunities and competitive pressures across all sectors.
+                </div>
+            </div>
+        </div>
+
+        <!-- SEA SECTION -->
+        <div class="section">
+            <div class="section-title">
+                <span class="region-icon">🌏</span>
+                Southeast Asia Market
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">GDP Impact by 2030</div>
+                    <div class="metric-value positive">13-18%</div>
+                    <div class="metric-change">Worth ~$1 Trillion</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Digital Economy 2025</div>
+                    <div class="metric-value">$300B+</div>
+                    <div class="metric-change up">1.5x forecasted 10 years ago</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Data Center Investment</div>
+                    <div class="metric-value positive">$30B+</div>
+                    <div class="metric-change">H1 2024 (SG, TH, MY)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Consumer AI Interest</div>
+                    <div class="metric-value positive">3x</div>
+                    <div class="metric-change">Global average</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Early Adopter ROI</div>
+                    <div class="metric-value positive">3x+</div>
+                    <div class="metric-change">From agentic AI investments</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">GenAI Growth</div>
+                    <div class="metric-value positive">60%</div>
+                    <div class="metric-change">Report business growth</div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">🎯 Key Insight</div>
+                <div class="insight-content">
+                    Southeast Asia is transitioning from foundational digital economy to intelligent AI reality. The region has unique structural advantages: young tech-savvy population, digital-native infrastructure, and strong consumer demand. Major infrastructure investments by Google, AWS, and others signal confidence in regional potential.
+                </div>
+            </div>
+        </div>
+
+        <!-- THAILAND SECTION -->
+        <div class="section">
+            <div class="section-title">
+                <span class="region-icon">🇹🇭</span>
+                Thailand Market
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Market Growth Rate</div>
+                    <div class="metric-value positive">28.55%</div>
+                    <div class="metric-change">Annually (highest in region)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Market Value 2030</div>
+                    <div class="metric-value">114B</div>
+                    <div class="metric-change">Thai Baht (projected)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Business Adoption</div>
+                    <div class="metric-value positive">17.1%</div>
+                    <div class="metric-change">2nd in ASEAN (after ID)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Economic Potential</div>
+                    <div class="metric-value positive">2.6T</div>
+                    <div class="metric-change">Thai Baht by 2030</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Digital Economy Share</div>
+                    <div class="metric-value warning">11%</div>
+                    <div class="metric-change">Of GDP by 2027 (from 6%)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Regional Position</div>
+                    <div class="metric-value positive">AI Hub</div>
+                    <div class="metric-change">Emerging ASEAN leader</div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">🎯 Key Insight</div>
+                <div class="insight-content">
+                    Thailand is positioned as emerging "AI Hub for ASEAN" with geographic advantages (latency sweet spot), infrastructure investments ($30B+ in data centers), and government support (Thailand 4.0 initiative). However, adoption rate still lags Indonesia. Success requires rapid workforce upskilling and competitive infrastructure development.
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPARATIVE ANALYSIS -->
+        <div class="section">
+            <div class="section-title">📊 Comparative Ranking</div>
+            
+            <div class="comparison-table">
+                <div class="table-header">
+                    <div>Metric</div>
+                    <div>Global</div>
+                    <div>SEA</div>
+                    <div>Thailand</div>
+                </div>
+                <div class="table-row">
+                    <div style="font-weight: 600;">Market Size</div>
+                    <div>$514.5B</div>
+                    <div>$300B+</div>
+                    <div>114B ฿ by 2030</div>
+                </div>
+                <div class="table-row">
+                    <div style="font-weight: 600;">Growth Rate</div>
+                    <div>19% YoY</div>
+                    <div>13-18% GDP</div>
+                    <div>28.55% annually ⭐</div>
+                </div>
+                <div class="table-row">
+                    <div style="font-weight: 600;">Adoption Rate</div>
+                    <div>94% companies</div>
+                    <div>23% full adoption</div>
+                    <div>17.1% (2nd)</div>
+                </div>
+                <div class="table-row">
+                    <div style="font-weight: 600;">ROI Success</div>
+                    <div>3.7x verified</div>
+                    <div>60% report growth</div>
+                    <div>2.6T ฿ potential</div>
+                </div>
+                <div class="table-row">
+                    <div style="font-weight: 600;">Key Strength</div>
+                    <div>Tech leadership</div>
+                    <div>Consumer demand</div>
+                    <div>Regional position</div>
+                </div>
+                <div class="table-row">
+                    <div style="font-weight: 600;">Key Challenge</div>
+                    <div>Market saturation</div>
+                    <div>Skills gap</div>
+                    <div>Infrastructure race ⚠️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPETITIVE POSITIONING -->
+        <div class="section">
+            <div class="section-title">🏆 Regional Competitive Positioning</div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="insight-box">
+                    <div class="insight-title">Singapore 🥇</div>
+                    <div class="insight-content">
+                        Regional AI leader. $1.6B government investment. $26B tech company investment. Global AI hub status. Advanced infrastructure.
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <div class="insight-title">Indonesia 🥈</div>
+                    <div class="insight-content">
+                        24.6% company adoption (highest ASEAN). Large domestic market leverage. Growing startup ecosystem. Major players: Go-Jek, Kaskus.
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <div class="insight-title">Thailand 🥉</div>
+                    <div class="insight-content">
+                        17.1% adoption (2nd place). Highest growth rate (28.55%). Emerging regional hub. Government backing. Infrastructure catch-up.
+                    </div>
+                </div>
+                <div class="insight-box">
+                    <div class="insight-title">Malaysia 🎯</div>
+                    <div class="insight-content">
+                        Aiming for top 20 global AI economies by 2030. National AI Roadmap 2021-2025. Balanced development. Regional player.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRITICAL METRICS FOR DECISION MAKERS -->
+        <div class="section">
+            <div class="section-title">⚡ Critical Metrics for Leaders</div>
+            
+            <div class="insight-box">
+                <div class="insight-title">🔴 For Thai Policy Makers</div>
+                <div class="insight-content">
+                    <strong>Watch:</strong> Infrastructure investment ($30B+ competing markets), Workforce adoption rate (28.55% growth is good, but 17.1% adoption still lags), Regional hub positioning (vs Singapore/Indonesia). <strong>Action:</strong> Accelerate digital skills training, streamline AI regulations, attract tech talent globally.
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">🔵 For Thai Business Leaders</div>
+                <div class="insight-content">
+                    <strong>Opportunity:</strong> $2.6 trillion potential value by 2030. Growing market demand. Government support. <strong>Risk:</strong> Adoption rates still behind competitors. Skills shortage. Infrastructure not yet world-class. <strong>Action:</strong> Invest in agentic AI now, upskill workforce immediately, prepare for 2027-2030 acceleration.
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">⚠️ Critical Window</div>
+                <div class="insight-content">
+                    <strong>2026 is the make-or-break year:</strong> Companies/countries that build AI capabilities NOW will lead ASEAN for the next decade. Those that delay face competitive disadvantage. Thailand's window is open but closing as Indonesia and Singapore pull ahead on adoption.
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div>Data Source: WEF, Google, Deloitte, McKinsey, Statista, SEAPI | Updated: Feb 14, 2026</div>
+            <div style="margin-top: 8px;">#DecodingAIforWorkforce</div>
+        </footer>
+    </div>
+</body>
+</html>
